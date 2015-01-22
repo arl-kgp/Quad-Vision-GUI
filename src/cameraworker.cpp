@@ -2,6 +2,7 @@
 #include <QtCore>
 #define CAMNUM 0
 
+cv::Mat imageptr_cv;
 void imageCallback(const sensor_msgs::ImageConstPtr& msg)
 {
     qDebug() << " Finally called ";
@@ -17,7 +18,8 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
      ROS_ERROR("cv_bridge exception: %s", e.what());
      return;
    }
-  cv::imshow("view", cv_ptr->image);
+  ::imageptr_cv = cv_ptr->image;
+  //cv::imshow("view", cv_ptr->image);
 //  *ipl = cv_ptr->image;
 
 }
@@ -68,13 +70,13 @@ void CameraWorker::onTimeout()
     if(ros::ok())
         ros::spinOnce();
 
-    //QImage qimg((uchar*)displayFrame->imageData, displayFrame->width, displayFrame->height, displayFrame->widthStep, QImage::Format_RGB888);
+    QImage qimg((uchar*)imageptr_cv.data, imageptr_cv.cols, imageptr_cv.rows, imageptr_cv.step, QImage::Format_RGB888);
     myMutex->lock();
     if(myPixmap)
         delete myPixmap;
-   // myPixmap = new QPixmap(QPixmap::fromImage(qimg));
+    myPixmap = new QPixmap(QPixmap::fromImage(qimg));
     myMutex->unlock();
-    //emit imageReady(myPixmap);
+    emit imageReady(myPixmap);
     timer->setSingleShot(true);
     timer->start(10);
 }
