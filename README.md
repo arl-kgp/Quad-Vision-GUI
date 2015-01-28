@@ -7,7 +7,7 @@ Dependencies: Qt 4+, ROS
 
 1. Clone this repository.
 
-2. Download ROS Bag from Links [1] [2].
+2. Download ROS Bag from Links [1](https://www.copy.com/s/8pOulQvcpdPFPPFP) [2](https://www.copy.com/s/IAeijX9mQma0QECx).
 
 3. Run the ROS bag in one terminal
 
