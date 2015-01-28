@@ -9,7 +9,6 @@ quadGUI::quadGUI(QWidget *parent) :
     ui->setupUi(this);
 
     ///Camera Thread Setup
-
     cameraThread = new QThread;
     camMutex = new QMutex;
     cw = new CameraWorker;
@@ -21,7 +20,6 @@ quadGUI::quadGUI(QWidget *parent) :
     connect(cw, SIGNAL(imageReady(QPixmap*)), this, SLOT(onCamImageReady(QPixmap*)));
     cw->moveToThread(cameraThread);
     cameraThread->start();
-    //    timer->start(30);
 }
 
 quadGUI::~quadGUI()
@@ -30,7 +28,6 @@ quadGUI::~quadGUI()
     cameraThread->wait();
     delete cw;
     delete ui;
-    cv::destroyWindow("view");
 }
 
 void quadGUI::onTimeout()
@@ -44,5 +41,4 @@ void quadGUI::onCamImageReady(QPixmap *pm)
     camMutex->lock();
     ui->imgLabel->setPixmap(*pm);
     camMutex->unlock();
-    //fpsTimer->restart();
 }

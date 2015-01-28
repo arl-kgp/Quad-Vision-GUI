@@ -5,30 +5,22 @@
 cv::Mat imageptr_cv;
 void imageCallback(const sensor_msgs::ImageConstPtr& msg)
 {
-    qDebug() << " Finally called ";
-  // sensor_msgs::CvBridge bridge;
-  // namedWindow( "view", cv::WINDOW_AUTOSIZE );
-  cv_bridge::CvImagePtr cv_ptr;
-   try
-   {
-     cv_ptr = cv_bridge::toCvCopy(msg, "bgr8");
-   }
-   catch (cv_bridge::Exception& e)
-   {
-     ROS_ERROR("cv_bridge exception: %s", e.what());
-     return;
-   }
-  ::imageptr_cv = cv_ptr->image;
-  //cv::imshow("view", cv_ptr->image);
-//  *ipl = cv_ptr->image;
-
+    cv_bridge::CvImagePtr cv_ptr;
+    try
+    {
+         cv_ptr = cv_bridge::toCvCopy(msg, "bgr8");
+    }
+    catch (cv_bridge::Exception& e)
+    {
+         ROS_ERROR("cv_bridge exception: %s", e.what());
+        return;
+    }
+    ::imageptr_cv = cv_ptr->image;
 }
 
 CameraWorker::CameraWorker(QObject *parent) :
     QObject(parent)
 {
-
-    cv::namedWindow("view");
     cv::startWindowThread();
 
     image_transport::ImageTransport it(nh);
@@ -40,21 +32,9 @@ CameraWorker::CameraWorker(QObject *parent) :
     delx = dely = 0;
     capture = cvCaptureFromCAM(-1);
 
-//    cvSetCaptureProperty(capture, CV_CAP_PROP_FPS, 30);
-    IplImage *temp = cvLoadImage("/home/abhinav/Pictures/123.png");
-    arenaFrame = cvCreateImage(cvSize(640,480), 8, 3);
-    cvResize(temp, arenaFrame);
-    if(!arenaFrame)
-    {
-        qDebug() << "Arena couln't be loaded.";
-        return;
-    }
-
-//    qDebug() << "xOffset = " << frame->roi->xOffset << " yOffset = " << frame->roi->yOffset << " width= " << frame->roi->width << "height=" << frame->roi->height;
     myPixmap = NULL;
     timer = new QTimer;
     connect(timer, SIGNAL(timeout()), this, SLOT(onTimeout()));
-   // ros::spinOnce();
 }
 
 void CameraWorker::setup(QThread *cThread, QMutex *mutex)
@@ -66,7 +46,6 @@ void CameraWorker::setup(QThread *cThread, QMutex *mutex)
 
 void CameraWorker::onTimeout()
 {
-    qDebug() << "Called" ;
     if(ros::ok())
         ros::spinOnce();
 

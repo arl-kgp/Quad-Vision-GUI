@@ -11,9 +11,7 @@ void CamLabel::mousePressEvent(QMouseEvent *ev)
 {
     if(ev->buttons() & Qt::LeftButton)
     {
-//        qDebug() << "mouse signal sent.";
         emit mouseClicked(ev->x(), ev->y());
-//        emit mousePressed(ev->x(), ev->y());
     }
     if(ev->buttons() & Qt::RightButton)
     {
