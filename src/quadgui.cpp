@@ -42,3 +42,51 @@ void quadGUI::onCamImageReady(QPixmap *pm)
     ui->imgLabel->setPixmap(*pm);
     camMutex->unlock();
 }
+
+void quadGUI::on_takeoffButton_clicked()
+{
+    ROS_INFO("Flying ARdrone");
+    takeOff = nh.advertise<std_msgs::Empty>("/ardrone/takeoff", 1);
+    twist = nh.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
+    ros::Rate loop_rate(30);
+
+    int cnt = 0;
+    while( ros::ok()) {
+        if(cnt < 5){
+            cnt+=1;
+            takeOff.publish(msgE);
+            ros::spinOnce();
+        }
+        else
+            break;
+        loop_rate.sleep();
+    }
+}
+
+void quadGUI::on_landButton_clicked()
+{
+    ROS_INFO("Landing ARdrone");
+    land = nh.advertise<std_msgs::Empty>("/ardrone/land", 1);
+    ros::Rate loop_rate(30);
+    int cnt = 0;
+    while( ros::ok()) {
+        if(cnt < 5){
+            cnt+=1;
+            land.publish(msgE);
+            ros::spinOnce();
+        }
+        else
+            break;
+        loop_rate.sleep();
+    }
+}
+
+void quadGUI::on_togglecameraButton_clicked()
+{
+    ros::ServiceClient client = nh.serviceClient<std_srvs::Empty>("/quad/ardrone/togglecam");
+    std_srvs::Empty service;
+    if(client.call(service))
+    {
+        ROS_INFO("Camera toggled");
+    }
+}
